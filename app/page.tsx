@@ -5,7 +5,7 @@ import { Globe2, ArrowUpRight, Anchor, Layers, Route, Navigation, ChevronRight, 
 import { Button } from '@/components/ui/button';
 import { locations, routes, ports } from './trade-data';
 import type * as Leaflet from 'leaflet';
-const colors={energy:'#bf7416',trade:'#147782',conflict:'#b44856'};
+const colors={energy:'#ffc373',trade:'#4ad7d1',conflict:'#fb839a'};
 export default function Home(){
  const host=useRef<HTMLDivElement>(null), map=useRef<Leaflet.Map|null>(null), routeLayer=useRef<Leaflet.LayerGroup|null>(null), portLayer=useRef<Leaflet.LayerGroup|null>(null);
  const [selected,setSelected]=useState('hormuz'),[ready,setReady]=useState(false),[error,setError]=useState(''),[showRoutes,setShowRoutes]=useState(true),[showPorts,setShowPorts]=useState(true);
@@ -17,9 +17,9 @@ export default function Home(){
  const tiles=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(m);
  tiles.on('tileerror',()=>setError('Some map tiles could not load. Check your connection or retry.'));tiles.on('tileload',()=>setError(''));
  routeLayer.current=L.layerGroup().addTo(m);
- routes.forEach(r=>L.polyline(r.points,{color:colors[r.kind],weight:3,opacity:.8,dashArray:'7 9'}).bindTooltip(r.name+' · illustrative').addTo(routeLayer.current!));
+ routes.forEach(r=>L.polyline(r.points,{color:colors[r.kind],weight:2.5,opacity:.9,dashArray:'7 9',className:'trade-route '+r.kind}).bindTooltip(r.name+' · illustrative').addTo(routeLayer.current!));
  locations.forEach((p,i)=>{const marker=L.marker(p.point,{title:p.name,icon:L.divIcon({className:'atlas-marker',html:`<span style="--pin:${colors[p.kind]}">${String(i+1).padStart(2,'0')}</span>`,iconSize:[36,36],iconAnchor:[18,18]})}).addTo(m);marker.bindTooltip(p.name,{direction:'top',offset:[0,-14]});marker.on('click',()=>setSelected(p.id));});
- portLayer.current=L.layerGroup().addTo(m);ports.forEach(([name,lat,lon])=>L.circleMarker([lat,lon],{radius:5,color:'#b44856',weight:2,fillColor:'#fff',fillOpacity:1}).bindTooltip(name).addTo(portLayer.current!));
+ portLayer.current=L.layerGroup().addTo(m);ports.forEach(([name,lat,lon])=>L.circleMarker([lat,lon],{radius:5,color:'#fb839a',weight:2,fillColor:'#102338',fillOpacity:1}).bindTooltip(name).addTo(portLayer.current!));
  const resize=new ResizeObserver(()=>m.invalidateSize());resize.observe(host.current);m.on('unload',()=>resize.disconnect());setReady(true);
  }).catch(()=>setError('The map could not start. Reload to try again.'));
  return()=>{disposed=true;localMap?.remove();map.current=null;};},[]);
@@ -53,4 +53,5 @@ export default function Home(){
  </section></div><footer><span><Navigation size={13}/>Geographic context, not navigation guidance</span><a href="https://www.openstreetmap.org/fixthemap" target="_blank" rel="noreferrer">Report a map issue <ArrowUpRight size={12}/></a><span>FREE MAPS / OPENSTREETMAP</span></footer>
  </main>;
 }
+
 
