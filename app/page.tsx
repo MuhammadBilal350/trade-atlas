@@ -36,7 +36,7 @@ export default function Home(){
  return()=>lifecycle.abort();
  },[]);
  return <main className="atlas">
- <header className="topbar"><div className="brand"><Globe2 size={27}/><span>TRADE<span className="brand-light">ATLAS</span></span><span className="edition">EXPLORER / 01</span></div><div className="feed"><Radio size={15}/><span>AIS vessels · not connected</span></div></header>
+ <header className="topbar"><div className="brand"><Globe2 size={27}/><span>TRADE<span className="brand-light">ATLAS</span></span><span className="edition">EXPLORER / 01</span></div><a className="air-mode-link" href="/aircraft">Aircraft ↗</a><div className="feed"><Radio size={15}/><span>AIS vessels · not connected</span></div></header>
  <div className="workspace"><aside className="sidebar"><div className="sidebar-intro"><p className="eyebrow">THE WORLD IN TRANSIT</p><h1>Where trade<br/>meets geography.</h1><p>Explore the passages that connect global energy, goods, and food.</p></div>
  <div className="list-title"><span>STRATEGIC PASSAGES</span><span>08</span></div><nav aria-label="Trade chokepoints" className="locations">{locations.map((p,i)=><Button key={p.id} variant="ghost" className={'place '+(selected===p.id?'active':'')} onClick={()=>setSelected(p.id)} aria-pressed={selected===p.id}><span className={'place-number '+p.kind}>{String(i+1).padStart(2,'0')}</span><span className="place-copy"><strong>{p.name}</strong><small>{p.region}</small></span><ChevronRight size={15}/></Button>)}</nav>
  <div className="sidebar-note"><Anchor size={18}/><p>Hover over a marker for details. Zoom in for place names. On touch screens, tap a marker.</p></div></aside>
@@ -48,6 +48,8 @@ export default function Home(){
  </section></div><footer><span><Navigation size={13}/>Geographic context, not navigation guidance</span><a href="https://www.openstreetmap.org/fixthemap" target="_blank" rel="noreferrer">Report a map issue <ArrowUpRight size={12}/></a><span>NATURAL EARTH / OPENSTREETMAP</span></footer>
  </main>;
 }
+
+
 
 
 
