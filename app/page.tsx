@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { locations } from './trade-data';
 import { createTradeMap } from './trade-map';
 import type * as Leaflet from 'leaflet';
+import ActivityPanel from './activity/panel';
 
 export default function Home(){
  const host=useRef<HTMLDivElement>(null), map=useRef<Leaflet.Map|null>(null), routeLayer=useRef<Leaflet.LayerGroup|null>(null), portLayer=useRef<Leaflet.LayerGroup|null>(null);
@@ -31,12 +32,12 @@ export default function Home(){
  const p=locations.find(x=>x.id===input.id);if(!p)throw new Error('Unknown location.');
  if(!map.current)throw new Error('Map is not ready.');
  flushSync(()=>setSelected(p.id));map.current.stop();map.current.setView(p.point,p.zoom,{animate:false});
- return {id:p.id,name:p.name,description:p.description,liveVessels:false};
+ return {id:p.id,name:p.name,description:p.description,liveVessels:"See activity feed status"};
  }},{signal:lifecycle.signal})).catch(()=>{});}catch{}
  return()=>lifecycle.abort();
  },[]);
  return <main className="atlas">
- <header className="topbar"><div className="brand"><Globe2 size={27}/><span>TRADE<span className="brand-light">ATLAS</span></span><span className="edition">EXPLORER / 01</span></div><a className="air-mode-link" href="/aircraft">Aircraft ↗</a><div className="feed"><Radio size={15}/><span>AIS vessels · not connected</span></div></header>
+ <header className="topbar"><div className="brand"><Globe2 size={27}/><span>TRADE<span className="brand-light">ATLAS</span></span><span className="edition">EXPLORER / 01</span></div><a className="air-mode-link" href="/aircraft">Aircraft ↗</a><div className="feed"><Radio size={15}/><span>VESSELS + AIRCRAFT</span></div></header>
  <div className="workspace"><aside className="sidebar"><div className="sidebar-intro"><p className="eyebrow">THE WORLD IN TRANSIT</p><h1>Where trade<br/>meets geography.</h1><p>Explore the passages that connect global energy, goods, and food.</p></div>
  <div className="list-title"><span>STRATEGIC PASSAGES</span><span>08</span></div><nav aria-label="Trade chokepoints" className="locations">{locations.map((p,i)=><Button key={p.id} variant="ghost" className={'place '+(selected===p.id?'active':'')} onClick={()=>setSelected(p.id)} aria-pressed={selected===p.id}><span className={'place-number '+p.kind}>{String(i+1).padStart(2,'0')}</span><span className="place-copy"><strong>{p.name}</strong><small>{p.region}</small></span><ChevronRight size={15}/></Button>)}</nav>
  <div className="sidebar-note"><Anchor size={18}/><p>Hover over a marker for details. Zoom in for place names. On touch screens, tap a marker.</p></div></aside>
@@ -45,9 +46,10 @@ export default function Home(){
  {!ready&&!error&&<div className="map-message" role="status">Loading the map…</div>}{error&&<div className="map-message error" role="alert">{error}<Button variant="outline" onClick={()=>window.location.reload()}>Retry</Button></div>}
  <div className="map-layers"><span><Layers size={15}/>LAYERS</span><label><input type="checkbox" checked={showRoutes} onChange={e=>setShowRoutes(e.target.checked)}/>Trade routes</label><label><input type="checkbox" checked={showPorts} onChange={e=>setShowPorts(e.target.checked)}/>Black Sea ports</label></div>
  <div className="legend"><span><i className="energy"/>Energy</span><span><i className="trade"/>Trade</span><span><i className="conflict"/>War context</span><span className="route-note"><Route size={14}/>Illustrative routes · no live status</span></div>
- </section></div><footer><span><Navigation size={13}/>Geographic context, not navigation guidance</span><a href="https://www.openstreetmap.org/fixthemap" target="_blank" rel="noreferrer">Report a map issue <ArrowUpRight size={12}/></a><span>NATURAL EARTH / OPENSTREETMAP</span></footer>
+ </section></div><ActivityPanel region={selected} name={location.name} map={ready?map.current:null}/><footer><span><Navigation size={13}/>Geographic context, not navigation guidance</span><a href="https://www.openstreetmap.org/fixthemap" target="_blank" rel="noreferrer">Report a map issue <ArrowUpRight size={12}/></a><span>NATURAL EARTH / OPENSTREETMAP</span></footer>
  </main>;
 }
+
 
 
 
